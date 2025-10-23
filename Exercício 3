@@ -1,0 +1,54 @@
+# Classe MicroondasUnidade (Composição)
+class MicroondasUnidade
+  def aquecer_por
+    puts "🔥 Unidade do Microondas aquecendo mensagem..."
+  end
+end
+
+# Classe DMail (Agregação)
+class DMail
+  attr_reader :conteudo, :hora_envio
+
+  def initialize(conteudo, hora_envio)
+    @conteudo = conteudo
+    @hora_envio = hora_envio
+  end
+
+  def to_s
+    "D-Mail: '#{@conteudo}' enviada às #{@hora_envio}"
+  end
+end
+
+# Classe principal TelefoneDeMicroondas
+class TelefoneDeMicroondas
+  def initialize
+    @unidade = MicroondasUnidade.new
+    @d_mails = []
+  end
+
+  def enviar_dmail
+    print "Conteúdo da D-Mail: "
+    conteudo = gets.chomp
+    print "Hora de envio (ex: 10:30): "
+    hora = gets.chomp
+
+    @unidade.aquecer_por
+    novo = DMail.new(conteudo, hora)
+    @d_mails << novo
+    puts "✅ D-Mail enviada!"
+  end
+
+  def listar_dmails(horario_corte)
+    puts "\n📨 D-Mails enviadas após #{horario_corte}:"
+    resultado = @d_mails.select { |d| d.hora_envio > horario_corte }
+    resultado.each { |d| puts d.to_s }
+  end
+end
+
+# main
+telefone = TelefoneDeMicroondas.new
+telefone.enviar_dmail
+telefone.enviar_dmail
+print "Mostrar D-Mails enviadas após qual horário? "
+horario = gets.chomp
+telefone.listar_dmails(horario)
