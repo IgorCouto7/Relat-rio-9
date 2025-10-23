@@ -1,0 +1,62 @@
+# Classe base abstrata
+class Musico
+  attr_reader :nome, :instrumento
+
+  def initialize(nome, instrumento)
+    @nome = nome
+    @instrumento = instrumento
+  end
+
+  def tocar_partitura(peca)
+    raise NotImplementedError, "Este método deve ser implementado nas subclasses"
+  end
+
+  def to_s
+    "#{@nome} (#{@instrumento})"
+  end
+end
+
+# Subclasse Pianista
+class Pianista < Musico
+  def tocar_partitura(peca)
+    puts "#{@nome} está tocando #{peca} com paixão no piano 🎹"
+  end
+end
+
+# Subclasse Violinista
+class Violinista < Musico
+  def tocar_partitura(peca)
+    puts "#{@nome} executa #{peca} com emoção no violino 🎻"
+  end
+end
+
+# Classe Maestro
+class Maestro
+  def initialize
+    @musicos = []
+  end
+
+  def adicionar_musico(musico)
+    @musicos << musico
+  end
+
+  def iniciar_ensaio(peca)
+    puts "\n🎼 Ensaio da peça '#{peca}' começou!"
+    @musicos.each { |m| m.tocar_partitura(peca) }
+  end
+
+  def mudar_foco(estado)
+    novos_estados = @musicos.map { |m| "#{m.nome} agora está #{estado}!" }
+    puts novos_estados
+  end
+end
+
+# main
+maestro = Maestro.new
+maestro.adicionar_musico(Pianista.new("Kousei", "Piano"))
+maestro.adicionar_musico(Violinista.new("Kaori", "Violino"))
+
+print "Nome da peça: "
+peca = gets.chomp
+maestro.iniciar_ensaio(peca)
+maestro.mudar_foco("concentrado 🎶")
