@@ -1,0 +1,100 @@
+# ======= MÓDULOS =======
+
+# Módulo Rastreavel (para personagens rastreáveis)
+module Rastreavel
+  attr_accessor :localizacao
+
+  def obter_localizacao(hora)
+    "Localização de #{self.class}: #{@localizacao} às #{hora}"
+  end
+end
+
+# Módulo Perigoso (para criminosos)
+module Perigoso
+  def calcular_risco
+    rand(5..10) # risco aleatório entre 5 e 10
+  end
+end
+
+# ======= CLASSES =======
+
+# Classe base
+class Participante
+  attr_accessor :nome
+
+  def initialize(nome)
+    @nome = nome
+  end
+
+  def to_s
+    "#{@nome} (#{self.class})"
+  end
+end
+
+# Detetive - rastreável
+class Detetive < Participante
+  include Rastreavel
+
+  def initialize(nome, localizacao)
+    super(nome)
+    @localizacao = localizacao
+  end
+end
+
+# Mestre do Crime - rastreável e perigoso
+class MestreDoCrime < Participante
+  include Rastreavel
+  include Perigoso
+
+  def initialize(nome, localizacao)
+    super(nome)
+    @localizacao = localizacao
+  end
+end
+
+# ======= CLASSE CENÁRIO =======
+class Cenario
+  def initialize
+    @participantes = []
+  end
+
+  def adicionar_participante(p)
+    @participantes << p
+  end
+
+  def listar_rastreaveis
+    @participantes.select { |p| p.respond_to?(:obter_localizacao) }
+  end
+
+  def identificar_ameacas
+    @participantes.select { |p| p.respond_to?(:calcular_risco) }
+  end
+end
+
+#main
+puts "=== Jogo das Sombras ==="
+print "Localização de Sherlock: "
+local_sherlock = gets.chomp
+print "Localização de Moriarty: "
+local_moriarty = gets.chomp
+
+# Cria os participantes
+sherlock = Detetive.new("Sherlock Holmes", local_sherlock)
+moriarty = MestreDoCrime.new("Professor Moriarty", local_moriarty)
+
+# Cria o cenário e adiciona
+cenario = Cenario.new
+cenario.adicionar_participante(sherlock)
+cenario.adicionar_participante(moriarty)
+
+# Lista rastreáveis
+puts "\n🔍 Rastreáveis no cenário:"
+cenario.listar_rastreaveis.each do |r|
+  puts r.obter_localizacao("22:00")
+end
+
+# Identifica ameaças
+puts "\n⚠️ Ameaças detectadas:"
+cenario.identificar_ameacas.each do |a|
+  puts "#{a.nome} é perigoso! Nível de risco: #{a.calcular_risco}"
+end
